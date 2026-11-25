@@ -15,8 +15,6 @@ api_hash = os.getenv("API_HASH")
 if not api_id_raw or not api_hash:
     raise ValueError("Missing API_ID or API_HASH in .env")
 
-log_file = Path("incoming_messages.jsonl")
-
 client = TelegramClient("session_name", int(api_id_raw), api_hash)
 generation_lock = asyncio.Lock()
 
@@ -33,25 +31,6 @@ async def handle_incoming_message(event):
         ).strip()
         or str(event.sender_id)
     )
-    chat_title = getattr(chat, "title", None) or "Direct Message"
-    record = {
-        "timestamp": datetime.now().isoformat(timespec="seconds"),
-        "chat": chat_title,
-        "sender": sender_name,
-        "sender_id": event.sender_id,
-        "message_id": event.id,
-        "text": event.raw_text,
-        "has_media": bool(event.media),
-    }
-
-    # 1. Print live on your PC terminal
-    print(f"[{record['timestamp']}] ({chat_title}) {sender_name}: {event.raw_text}")
-    if event.media:
-        print("   -> [Includes media/attachment]")
-
-    # 2. Append to a local file on your PC for later processing
-    with log_file.open("a", encoding="utf-8") as f:
-        f.write(json.dumps(record, ensure_ascii=False) + "\n")
 
     prompt = (event.raw_text or "").strip()
     if not prompt:
@@ -74,7 +53,6 @@ async def handle_incoming_message(event):
 def main():
     client.start()
     print("PC Telegram listener running. Waiting for incoming messages...")
-    print(f"Saving logs to: {log_file.resolve()}")
     client.run_until_disconnected()
 
 

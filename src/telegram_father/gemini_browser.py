@@ -28,11 +28,7 @@ CODE_MARKERS = (
     "asyncio",
 )
 
-initial_prompt = """اصنع بوربوينت عن تركيب المادة وخصائص العتاصر والجدول الدوري و مقارنة بين المخلوط والعنصر والمركب للصف الاول متوسط
-يجب ان يحتوي البوربوينت علي رسومات و صور و تكون بين 10 شرائح الي 15 شريحة
-الاستاذ: هشام المكي
-مدرسة: """
-retry_prompt = "create powerpoint not text"
+retry_prompt = "create the power point file already asked for only"
 max_attempts = 10
 wait_seconds = 120
 
